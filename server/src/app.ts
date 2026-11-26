@@ -6,12 +6,15 @@ import { config } from "./config.js";
 import { HttpError, type CardSource } from "./cards.js";
 import { evaluateCard, generateScenarios, loadRubric, toFeatureFile, type LlmClient } from "./ai.js";
 import { buildComment } from "./comment.js";
+import { basicAuth } from "./auth.js";
 import type { Evaluation, ScenarioSet } from "./types.js";
 
 const FEEDBACK_VERDICTS = ["util", "editado", "descartado"] as const;
 
 export function createApp(cards: CardSource, llm: LlmClient) {
   const app = express();
+  app.set("trust proxy", true);
+  if (config.appPassword) app.use(basicAuth(config.appPassword));
   app.use(express.json({ limit: "1mb" }));
 
   const cardId = (req: Request) => {

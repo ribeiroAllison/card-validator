@@ -1,4 +1,4 @@
-import type { LlmClient } from "./ai.js";
+import type { LlmClient } from "./core.js";
 
 /**
  * IA simulada para demonstrações sem chave de API.

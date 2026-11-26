@@ -1,5 +1,5 @@
-import type { LlmClient } from "./ai.js";
-import { HttpError } from "./cards.js";
+import type { LlmClient } from "./core.js";
+import { HttpError } from "./errors.js";
 
 /**
  * Adaptador para a API do Gemini (Google AI Studio), via REST.
