@@ -13,6 +13,7 @@ const env = (name: string) => (process.env[name] ?? "").trim();
 export const config = {
   port: Number(env("PORT") || 3001),
   minScore: Number(env("MIN_SCORE") || 70),
+  appPassword: env("APP_PASSWORD"),
   azdo: {
     org: env("AZDO_ORG"),
     project: env("AZDO_PROJECT"),

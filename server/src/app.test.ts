@@ -162,3 +162,23 @@ test("adaptador do Gemini: monta a requisição e lê o functionCall", async () 
     globalThis.fetch = realFetch;
   }
 });
+
+test("APP_PASSWORD protege o app, exceto o health check", async () => {
+  const { basicAuth } = await import("./auth.js");
+  const express = (await import("express")).default;
+  const app = express();
+  app.use(basicAuth("segredo"));
+  app.get("/api/health", (_q, r) => r.send("ok"));
+  app.get("/api/cards", (_q, r) => r.send("cards"));
+  const server = app.listen(0);
+  const base = `http://localhost:${(server.address() as AddressInfo).port}`;
+  const auth = (p: string) => ({ Authorization: "Basic " + Buffer.from("qualquer:" + p).toString("base64") });
+  try {
+    assert.equal((await fetch(base + "/api/health")).status, 200);
+    assert.equal((await fetch(base + "/api/cards")).status, 401);
+    assert.equal((await fetch(base + "/api/cards", { headers: auth("errada") })).status, 401);
+    assert.equal((await fetch(base + "/api/cards", { headers: auth("segredo") })).status, 200);
+  } finally {
+    server.close();
+  }
+});

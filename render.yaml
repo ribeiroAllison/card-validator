@@ -1,0 +1,25 @@
+# Blueprint do Render: https://render.com/docs/blueprint-spec
+# Render > New > Blueprint > selecione este repositório.
+services:
+  - type: web
+    name: card-validator
+    runtime: node
+    plan: free
+    region: virginia
+    branch: main
+    buildCommand: npm ci --include=dev && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: AI_PROVIDER
+        value: gemini
+      - key: GEMINI_MODEL
+        value: gemini-3.1-flash-lite
+      - key: GEMINI_API_KEY
+        sync: false   # o Render pede o valor na criação; nunca fica no repositório
+      - key: APP_PASSWORD
+        sync: false   # senha para abrir o app (o navegador pede no primeiro acesso)
+      - key: MIN_SCORE
+        value: "70"
