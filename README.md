@@ -47,9 +47,26 @@ Os prompts e a rubrica foram escritos pensando no Claude. Notas do Gemini podem 
 | `AI_PROVIDER` | `claude`, `gemini` ou `mock` (veja acima) |
 | `ANTHROPIC_API_KEY` / `ANTHROPIC_MODEL` | Chave e modelo do Claude (padrão `claude-sonnet-5-5`) |
 | `GEMINI_API_KEY` / `GEMINI_MODEL` | Chave e modelo do Gemini (padrão `gemini-3.8-flash`) |
+| `APP_PASSWORD` | Se preenchida, o app pede senha (Basic Auth). Recomendado quando publicado |
 | `MIN_SCORE` | Nota mínima para liberar a geração de cenários (padrão 70) |
 
 O `.env` está no `.gitignore`. Nunca faça commit de tokens.
+
+## Publicar no Render
+
+O repositório já tem um `render.yaml` (Blueprint). A chave da IA fica em variável de ambiente no Render, nunca no código nem no navegador.
+
+1. Em [render.com](https://render.com), entre com o GitHub e clique em **New > Blueprint**.
+2. Selecione o repositório `card-validator`. O Render lê o `render.yaml`, que usa a branch `main`.
+3. O Render pede os valores marcados como secretos:
+   - `GEMINI_API_KEY`: a chave do Google AI Studio.
+   - `APP_PASSWORD`: uma senha para abrir o app. O navegador pede no primeiro acesso, e qualquer nome de usuário serve.
+4. Clique em **Apply**. O primeiro deploy leva alguns minutos. O link fica no formato `https://card-validator-xxxx.onrender.com`.
+
+Observações sobre o plano gratuito:
+- O serviço "dorme" depois de 15 minutos sem acesso, e o primeiro acesso depois disso leva cerca de 30 s. Antes de apresentar, abra o link uma vez para acordar o servidor.
+- O disco não é persistente: o `data/feedback.jsonl` é apagado a cada deploy ou reinício. Para o piloto, o feedback vai precisar de um banco.
+- Para trocar para o Claude depois, mude `AI_PROVIDER` para `claude` e cadastre a `ANTHROPIC_API_KEY` em *Environment*, no painel do serviço.
 
 ## Como funciona
 
@@ -99,7 +116,7 @@ Os testes cobrem o cálculo da nota, a conversão de HTML e o fluxo completo da 
 
 ## Limitações conhecidas (PoC)
 
-- Sem autenticação: rode localmente ou em rede interna.
+- Autenticação mínima: uma senha única (`APP_PASSWORD`), suficiente para uma demo, não para produção.
 - O PAT é de uma pessoa. Num piloto maior, o ideal é uma service connection ou Entra ID.
 - Use projetos internos da Peers até validar com o jurídico o envio de dados de clientes à IA.
 - Os cenários são publicados como comentário. Criar work items do tipo Test Case fica para uma próxima versão.

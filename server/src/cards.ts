@@ -11,11 +11,8 @@ export interface CardSource {
   comment(id: number, html: string): Promise<{ published: boolean; url?: string }>;
 }
 
-export class HttpError extends Error {
-  constructor(public status: number, message: string) {
-    super(message);
-  }
-}
+export { HttpError } from "./errors.js";
+import { HttpError } from "./errors.js";
 
 // ---------------------------------------------------------------------------
 // Modo demo
