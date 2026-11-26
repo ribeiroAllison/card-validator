@@ -1,6 +1,7 @@
 export interface Health {
   mode: "azdo" | "demo";
   project: string | null;
+  provider: "claude" | "gemini" | "mock";
   model: string;
   aiMock: boolean;
   minScore: number;

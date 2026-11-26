@@ -63,6 +63,8 @@ class AzureDevOpsSource implements CardSource {
     const res = await fetch(url, {
       ...init,
       headers: { Authorization: this.auth, "Content-Type": "application/json", ...init.headers },
+    }).catch((e: Error) => {
+      throw new HttpError(502, `Não foi possível conectar ao Azure DevOps (${e.message}). Verifique a internet, a VPN ou o proxy.`);
     });
     if (!res.ok) {
       const body = await res.text().catch(() => "");

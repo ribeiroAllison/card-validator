@@ -118,7 +118,14 @@ export default function App() {
             {health.aiMock ? (
               <span className="pill warn" title="Respostas prontas, sem chamar a API do Claude">IA simulada</span>
             ) : (
-              <span className="pill muted">{health.model}</span>
+              <span className="pill muted">
+                {health.provider === "gemini" ? "Gemini" : "Claude"} · {health.model}
+              </span>
+            )}
+            {health.provider === "gemini" && (
+              <span className="pill warn" title="No free tier, o Google pode usar os dados enviados para melhorar os produtos dele">
+                Free tier: só cards de teste
+              </span>
             )}
           </div>
         )}

@@ -18,8 +18,11 @@ export const config = {
     project: env("AZDO_PROJECT"),
     pat: env("AZDO_PAT"),
   },
-  /** IA simulada: AI_MOCK=true ou ausência de chave */
-  aiMock: env("AI_MOCK").toLowerCase() === "true" || !env("ANTHROPIC_API_KEY"),
+  aiProvider: resolveProvider(),
+  gemini: {
+    apiKey: env("GEMINI_API_KEY"),
+    model: env("GEMINI_MODEL") || "gemini-3.8-flash",
+  },
   anthropic: {
     apiKey: env("ANTHROPIC_API_KEY"),
     model: env("ANTHROPIC_MODEL") || "claude-sonnet-5-5",
@@ -35,3 +38,19 @@ export const config = {
 
 export const azdoEnabled = () =>
   Boolean(config.azdo.org && config.azdo.project && config.azdo.pat);
+
+export type AiProvider = "claude" | "gemini" | "mock";
+
+/**
+ * AI_PROVIDER manda. Sem ele: AI_MOCK=true -> mock; senão o primeiro provedor
+ * com chave configurada (Claude, depois Gemini); sem nenhuma chave -> mock.
+ */
+function resolveProvider(): AiProvider {
+  const p = env("AI_PROVIDER").toLowerCase();
+  if (p === "claude" || p === "gemini" || p === "mock") return p;
+  if (p) throw new Error(`AI_PROVIDER inválido: "${p}". Use claude, gemini ou mock.`);
+  if (env("AI_MOCK").toLowerCase() === "true") return "mock";
+  if (env("ANTHROPIC_API_KEY")) return "claude";
+  if (env("GEMINI_API_KEY")) return "gemini";
+  return "mock";
+}

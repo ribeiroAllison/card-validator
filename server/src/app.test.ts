@@ -125,3 +125,40 @@ test("IA simulada dá notas coerentes aos cards de exemplo", async () => {
   const generic = await evaluateCard(llm, { id: 9, title: "X", type: "Bug", state: "New", description: "", acceptanceCriteria: "" });
   assert.match(generic.summary, /SIMULADO/);
 });
+
+test("adaptador do Gemini: monta a requisição e lê o functionCall", async () => {
+  const { createGeminiClient, toGeminiSchema } = await import("./gemini.js");
+  assert.deepEqual(
+    toGeminiSchema({ type: "object", properties: { s: { type: "integer", enum: [0, 1, 2] }, t: { type: "string", enum: ["a"] } } }),
+    { type: "object", properties: { s: { type: "integer" }, t: { type: "string", enum: ["a"] } } },
+  );
+
+  const realFetch = globalThis.fetch;
+  let sent: any;
+  globalThis.fetch = (async (url: string, init: RequestInit) => {
+    sent = { url, headers: init.headers, body: JSON.parse(String(init.body)) };
+    return new Response(
+      JSON.stringify({ candidates: [{ content: { parts: [{ functionCall: { name: "registrar_avaliacao", args: { ok: true } } }] } }] }),
+      { status: 200, headers: { "content-type": "application/json" } },
+    );
+  }) as typeof fetch;
+  try {
+    const client = createGeminiClient("k", "gemini-x");
+    const out = await client.callTool({
+      system: "sys",
+      user: "u",
+      maxTokens: 10,
+      tool: { name: "registrar_avaliacao", description: "d", input_schema: { type: "object", properties: {} } },
+    });
+    assert.deepEqual(out, { ok: true });
+    assert.match(sent.url, /models\/gemini-x:generateContent$/);
+    assert.equal(sent.headers["x-goog-api-key"], "k");
+    assert.equal(sent.body.toolConfig.functionCallingConfig.mode, "ANY");
+    assert.equal(sent.body.systemInstruction.parts[0].text, "sys");
+
+    globalThis.fetch = (async () => new Response("{}", { status: 429 })) as unknown as typeof fetch;
+    await assert.rejects(client.callTool({ system: "", user: "", maxTokens: 1, tool: { name: "x", description: "", input_schema: {} } }), /free tier/);
+  } finally {
+    globalThis.fetch = realFetch;
+  }
+});
