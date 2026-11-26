@@ -1,0 +1,34 @@
+[
+  {
+    "id": 101,
+    "type": "User Story",
+    "state": "New",
+    "title": "Recuperação de senha por e-mail",
+    "description": "<p><b>Como</b> usuário cadastrado que esqueceu a senha, <b>quero</b> receber um link por e-mail para criar uma nova senha, <b>para</b> voltar a acessar minha conta sem falar com o suporte.</p><p><b>Regras de negócio</b></p><ul><li>O link de redefinição expira em 30 minutos e só pode ser usado uma vez.</li><li>A nova senha deve ter de 8 a 64 caracteres, com ao menos uma letra maiúscula, uma minúscula e um número.</li><li>A nova senha não pode ser igual às 3 últimas senhas do usuário.</li><li>Por segurança, a tela sempre exibe a mesma mensagem ao solicitar o link, exista ou não o e-mail na base.</li><li>Máximo de 3 solicitações de link por e-mail a cada 15 minutos; a partir da 4ª, exibir 'Muitas tentativas. Tente novamente em alguns minutos.'</li></ul><p><b>Dependências</b>: serviço de e-mail transacional (SendGrid) já configurado no ambiente de homologação.</p><p><b>Fora do escopo</b>: recuperação por SMS.</p>",
+    "acceptanceCriteria": "<ol><li>Na tela de login, ao clicar em 'Esqueci minha senha' e informar um e-mail, o sistema exibe 'Se o e-mail estiver cadastrado, você receberá um link em instantes.'</li><li>Se o e-mail existir, um e-mail com o link é enviado em até 1 minuto.</li><li>Ao abrir um link válido, o usuário vê o formulário de nova senha e confirmação.</li><li>Ao salvar uma senha válida, o usuário é redirecionado ao login com a mensagem 'Senha alterada com sucesso'. Todas as sessões ativas são encerradas.</li><li>Link expirado ou já usado exibe 'Este link não é mais válido' com botão para solicitar um novo.</li><li>Senha fora da política exibe a regra não atendida abaixo do campo, sem salvar.</li></ol>"
+  },
+  {
+    "id": 102,
+    "type": "User Story",
+    "state": "New",
+    "title": "Exportar relatório de vendas para Excel",
+    "description": "<p>Como gerente comercial quero exportar o relatório de vendas para Excel para poder fazer minhas análises.</p><p>O relatório deve respeitar os filtros aplicados na tela (período, vendedor e região).</p><p>Colunas: data, número do pedido, cliente, vendedor, região, valor total.</p>",
+    "acceptanceCriteria": "<ul><li>Botão 'Exportar Excel' na tela de relatório de vendas.</li><li>O arquivo baixado contém as vendas filtradas.</li><li>A exportação deve ser rápida.</li></ul>"
+  },
+  {
+    "id": 103,
+    "type": "Product Backlog Item",
+    "state": "New",
+    "title": "Melhorar tela de cadastro de clientes",
+    "description": "<p>Ajustar a tela de cadastro de clientes conforme conversado com o cliente na reunião. Deixar mais amigável e validar os campos.</p>",
+    "acceptanceCriteria": ""
+  },
+  {
+    "id": 104,
+    "type": "User Story",
+    "state": "Active",
+    "title": "Aplicar cupom de desconto no checkout",
+    "description": "<p>Como cliente da loja, quero aplicar um cupom de desconto no checkout para pagar menos pela compra.</p><p>Regras:</p><ul><li>Cupom pode ser percentual ou valor fixo.</li><li>Só um cupom por pedido.</li><li>Cupom tem data de validade.</li><li>Alguns cupons têm valor mínimo de pedido.</li></ul>",
+    "acceptanceCriteria": "<ul><li>Campo 'Cupom' e botão 'Aplicar' no resumo do pedido.</li><li>Cupom válido: mostrar desconto e novo total.</li><li>Cupom inválido: mostrar mensagem de erro.</li><li>Cliente pode remover o cupom aplicado.</li></ul>"
+  }
+]

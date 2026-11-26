@@ -17,9 +17,25 @@ cp .env.example .env      # preencha as variáveis
 npm run dev               # API em :3001 e front em http://localhost:5173
 ```
 
-Sem as variáveis `AZDO_*`, o app roda em **modo demo** com os cards de `samples/cards.json`: um bom, um médio, um ruim e um intermediário. A `ANTHROPIC_API_KEY` é necessária em qualquer modo.
+Sem as variáveis `AZDO_*`, o app roda em **modo demo** com os cards de `samples/cards.json`: um bom, um médio, um ruim e um intermediário.
 
-Para produção local, `npm run build && npm start` serve tudo em `http://localhost:3001`.
+### Qual IA usar
+
+O provedor é escolhido por `AI_PROVIDER` no `.env`:
+
+| Provedor | Quando usar | Custo |
+|---|---|---|
+| `mock` | Demonstrações. Usa respostas prontas, escritas à mão para os 4 cards de exemplo (notas 94, 41, 6 e 50), e heurísticas para os demais | Zero |
+| `gemini` | Testar com uma IA de verdade antes de ter orçamento | Free tier do Google AI Studio |
+| `claude` | Piloto com cards reais | Créditos da API (o plano Team inclui créditos mensais) |
+
+Sem `AI_PROVIDER`, o app usa a primeira chave que encontrar (Claude, depois Gemini). Sem nenhuma chave, cai no `mock`. O topo da tela sempre mostra qual IA está ativa.
+
+> ⚠️ **Gemini free tier:** o Google pode usar o que for enviado para melhorar os produtos dele, com revisão humana. Use só com os cards de exemplo ou com cards internos sem dados sensíveis. **Nunca com cards de clientes.** A tela mostra o aviso "Free tier: só cards de teste".
+
+Para pegar a chave do Gemini, entre em [aistudio.google.com](https://aistudio.google.com), clique em *Get API key* e coloque o valor em `GEMINI_API_KEY`. Se o modelo padrão (`gemini-3.8-flash`) não estiver no free tier da sua conta, troque `GEMINI_MODEL` por um modelo que esteja. As cotas de cada modelo aparecem em aistudio.google.com/rate-limit.
+
+Os prompts e a rubrica foram escritos pensando no Claude. Notas do Gemini podem sair diferentes, então não compare números entre provedores.
 
 ### Variáveis (`.env`)
 
@@ -28,8 +44,9 @@ Para produção local, `npm run build && npm start` serve tudo em `http://localh
 | `AZDO_ORG` | Organização do Azure DevOps (o trecho depois de `dev.azure.com/`) |
 | `AZDO_PROJECT` | Projeto de onde os cards são lidos |
 | `AZDO_PAT` | Personal Access Token com escopo **Work Items: Read & write**. Prefira validade curta |
-| `ANTHROPIC_API_KEY` | Chave da API do Claude |
-| `ANTHROPIC_MODEL` | Modelo usado (padrão `claude-sonnet-5-5`) |
+| `AI_PROVIDER` | `claude`, `gemini` ou `mock` (veja acima) |
+| `ANTHROPIC_API_KEY` / `ANTHROPIC_MODEL` | Chave e modelo do Claude (padrão `claude-sonnet-5-5`) |
+| `GEMINI_API_KEY` / `GEMINI_MODEL` | Chave e modelo do Gemini (padrão `gemini-3.8-flash`) |
 | `MIN_SCORE` | Nota mínima para liberar a geração de cenários (padrão 70) |
 
 O `.env` está no `.gitignore`. Nunca faça commit de tokens.
@@ -37,7 +54,7 @@ O `.env` está no `.gitignore`. Nunca faça commit de tokens.
 ## Como funciona
 
 ```
-Azure DevOps ──(REST)──► server (Node/Express) ──► Claude (respostas em JSON via tool use)
+Azure DevOps ──(REST)──► server (Node/Express) ──► Claude | Gemini | mock (resposta em JSON via tool use / function calling)
      ▲                         │
      └──── comentário ◄────────┤
                                ▼

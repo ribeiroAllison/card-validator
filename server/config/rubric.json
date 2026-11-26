@@ -1,0 +1,72 @@
+{
+  "version": "0.1",
+  "scale": "Cada critério recebe 0 (ausente), 1 (parcial) ou 2 (atende).",
+  "criteria": [
+    {
+      "id": "objetivo",
+      "name": "Objetivo e valor claros",
+      "weight": 1,
+      "description": "O card diz quem é o usuário, o que ele precisa e por quê (ex.: formato de user story ou contexto equivalente).",
+      "levels": {
+        "0": "Não dá para entender o objetivo nem quem se beneficia.",
+        "1": "O objetivo existe, mas está vago ou sem o porquê.",
+        "2": "Usuário, necessidade e valor estão explícitos."
+      }
+    },
+    {
+      "id": "criterios_aceite",
+      "name": "Critérios de aceite testáveis",
+      "weight": 2,
+      "description": "Há critérios de aceite objetivos e verificáveis, que permitem dizer sem ambiguidade se o card está pronto.",
+      "levels": {
+        "0": "Sem critérios de aceite.",
+        "1": "Há critérios, mas são subjetivos ou incompletos (ex.: 'deve ser rápido', 'tela amigável').",
+        "2": "Critérios objetivos, verificáveis e cobrindo o comportamento principal."
+      }
+    },
+    {
+      "id": "regras_negocio",
+      "name": "Regras de negócio explícitas",
+      "weight": 2,
+      "description": "Cálculos, validações, permissões e condições estão escritos, não implícitos.",
+      "levels": {
+        "0": "Regras ausentes ou só sugeridas.",
+        "1": "Algumas regras descritas, outras implícitas ou ambíguas.",
+        "2": "Regras relevantes descritas de forma inequívoca."
+      }
+    },
+    {
+      "id": "casos_erro",
+      "name": "Casos de erro e exceção",
+      "weight": 1.5,
+      "description": "O card diz o que acontece quando algo dá errado: dado inválido, falha de integração, falta de permissão, estado inesperado.",
+      "levels": {
+        "0": "Nenhum caso de erro mencionado.",
+        "1": "Algum caso de erro citado, sem o comportamento esperado.",
+        "2": "Principais casos de erro com comportamento esperado definido."
+      }
+    },
+    {
+      "id": "dados_limites",
+      "name": "Dados e limites",
+      "weight": 1,
+      "description": "Campos, formatos, valores mínimos e máximos, volumes e exemplos de dados estão definidos.",
+      "levels": {
+        "0": "Sem informação sobre dados ou limites.",
+        "1": "Dados citados, mas sem formatos, limites ou exemplos.",
+        "2": "Formatos, limites e exemplos suficientes para testar."
+      }
+    },
+    {
+      "id": "dependencias",
+      "name": "Dependências e escopo",
+      "weight": 1,
+      "description": "Integrações, outros cards, ambientes e o que está fora do escopo estão identificados.",
+      "levels": {
+        "0": "Dependências e escopo não mencionados.",
+        "1": "Algumas dependências citadas, escopo pouco delimitado.",
+        "2": "Dependências identificadas e escopo (incluindo o que fica de fora) delimitado."
+      }
+    }
+  ]
+}
