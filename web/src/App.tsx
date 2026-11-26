@@ -115,8 +115,11 @@ export default function App() {
             <span className={`pill ${health.mode}`}>
               {health.mode === "azdo" ? `Azure DevOps · ${health.project}` : "Modo demo · cards de exemplo"}
             </span>
-            <span className="pill muted">{health.model}</span>
-            {!health.aiConfigured && <span className="pill warn">ANTHROPIC_API_KEY ausente</span>}
+            {health.aiMock ? (
+              <span className="pill warn" title="Respostas prontas, sem chamar a API do Claude">IA simulada</span>
+            ) : (
+              <span className="pill muted">{health.model}</span>
+            )}
           </div>
         )}
       </header>

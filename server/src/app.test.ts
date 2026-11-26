@@ -38,6 +38,7 @@ test("htmlToText converte listas e entidades", () => {
 
 // IA falsa: devolve respostas fixas conforme a ferramenta pedida
 const fakeLlm: LlmClient = {
+  model: "fake",
   async callTool({ tool, user }) {
     if (tool.name === "registrar_avaliacao") {
       const good = user.includes("Recuperação de senha");
@@ -102,4 +103,25 @@ test("fluxo da API em modo demo", async () => {
   } finally {
     server.close();
   }
+});
+
+test("IA simulada dá notas coerentes aos cards de exemplo", async () => {
+  const { createMockClient } = await import("./mock.js");
+  const { evaluateCard, generateScenarios } = await import("./ai.js");
+  const llm = createMockClient(0);
+  const cards = createCardSource();
+  const scores: Record<number, number> = {};
+  for (const id of [101, 102, 103, 104]) {
+    const ev = await evaluateCard(llm, await cards.get(id));
+    scores[id] = ev.score;
+    assert.equal(ev.model, "simulado");
+    const set = await generateScenarios(llm, await cards.get(id));
+    assert.ok(set.scenarios.length > 0);
+  }
+  assert.ok(scores[101] >= 70, `101 deveria passar (${scores[101]})`);
+  for (const id of [102, 103, 104]) assert.ok(scores[id] < 70, `${id} não deveria passar (${scores[id]})`);
+  console.log("notas simuladas:", scores);
+
+  const generic = await evaluateCard(llm, { id: 9, title: "X", type: "Bug", state: "New", description: "", acceptanceCriteria: "" });
+  assert.match(generic.summary, /SIMULADO/);
 });

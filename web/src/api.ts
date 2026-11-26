@@ -2,7 +2,7 @@ export interface Health {
   mode: "azdo" | "demo";
   project: string | null;
   model: string;
-  aiConfigured: boolean;
+  aiMock: boolean;
   minScore: number;
 }
 

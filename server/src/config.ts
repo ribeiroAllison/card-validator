@@ -18,6 +18,8 @@ export const config = {
     project: env("AZDO_PROJECT"),
     pat: env("AZDO_PAT"),
   },
+  /** IA simulada: AI_MOCK=true ou ausência de chave */
+  aiMock: env("AI_MOCK").toLowerCase() === "true" || !env("ANTHROPIC_API_KEY"),
   anthropic: {
     apiKey: env("ANTHROPIC_API_KEY"),
     model: env("ANTHROPIC_MODEL") || "claude-sonnet-5-5",

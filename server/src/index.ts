@@ -2,9 +2,11 @@ import { config } from "./config.js";
 import { createCardSource } from "./cards.js";
 import { createAnthropicClient } from "./ai.js";
 import { createApp } from "./app.js";
+import { createMockClient } from "./mock.js";
 
 const cards = createCardSource();
-const app = createApp(cards, createAnthropicClient());
+const llm = config.aiMock ? createMockClient() : createAnthropicClient();
+const app = createApp(cards, llm);
 
 app.listen(config.port, () => {
   console.log(`Card Validator API em http://localhost:${config.port}`);
@@ -13,5 +15,5 @@ app.listen(config.port, () => {
       ? `Azure DevOps: ${config.azdo.org}/${config.azdo.project}`
       : "Modo demo: usando samples/cards.json (configure AZDO_* no .env para usar o Azure DevOps)",
   );
-  if (!config.anthropic.apiKey) console.warn("Atenção: ANTHROPIC_API_KEY não configurada.");
+  if (config.aiMock) console.warn("IA SIMULADA: respostas prontas, sem chamar a API (AI_MOCK=true ou sem ANTHROPIC_API_KEY).");
 });

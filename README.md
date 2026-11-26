@@ -17,7 +17,13 @@ cp .env.example .env      # preencha as variáveis
 npm run dev               # API em :3001 e front em http://localhost:5173
 ```
 
-Sem as variáveis `AZDO_*`, o app roda em **modo demo** com os cards de `samples/cards.json`: um bom, um médio, um ruim e um intermediário. A `ANTHROPIC_API_KEY` é necessária em qualquer modo.
+Sem as variáveis `AZDO_*`, o app roda em **modo demo** com os cards de `samples/cards.json`: um bom, um médio, um ruim e um intermediário.
+
+### IA simulada (sem custo)
+
+Sem `ANTHROPIC_API_KEY`, ou com `AI_MOCK=true`, o app usa uma **IA simulada** (`server/src/mock.ts`). Ela devolve respostas prontas, escritas à mão para os 4 cards de exemplo, no mesmo formato da IA real. As notas ficam em 94, 41, 6 e 50. Para outros cards, usa heurísticas simples e avisa que o resultado é simulado. O topo da tela mostra **"IA simulada"** enquanto esse modo estiver ativo.
+
+Serve para demonstrar o fluxo sem gastar créditos. A avaliação real só acontece com a chave configurada.
 
 Para produção local, `npm run build && npm start` serve tudo em `http://localhost:3001`.
 
@@ -30,6 +36,7 @@ Para produção local, `npm run build && npm start` serve tudo em `http://localh
 | `AZDO_PAT` | Personal Access Token com escopo **Work Items: Read & write**. Prefira validade curta |
 | `ANTHROPIC_API_KEY` | Chave da API do Claude |
 | `ANTHROPIC_MODEL` | Modelo usado (padrão `claude-sonnet-5-5`) |
+| `AI_MOCK` | `true` força a IA simulada mesmo com chave configurada |
 | `MIN_SCORE` | Nota mínima para liberar a geração de cenários (padrão 70) |
 
 O `.env` está no `.gitignore`. Nunca faça commit de tokens.

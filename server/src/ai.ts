@@ -9,6 +9,8 @@ import type { Card, Evaluation, Rubric, Scenario, ScenarioSet, ScenarioType } fr
 
 /** Contrato mínimo do cliente da IA (permite trocar por um fake nos testes). */
 export interface LlmClient {
+  /** Nome exibido do modelo */
+  model: string;
   callTool(args: {
     system: string;
     user: string;
@@ -20,6 +22,7 @@ export interface LlmClient {
 export function createAnthropicClient(): LlmClient {
   if (!config.anthropic.apiKey) {
     return {
+      model: config.anthropic.model,
       async callTool() {
         throw new HttpError(500, "ANTHROPIC_API_KEY não configurada no .env.");
       },
@@ -27,6 +30,7 @@ export function createAnthropicClient(): LlmClient {
   }
   const client = new Anthropic({ apiKey: config.anthropic.apiKey });
   return {
+    model: config.anthropic.model,
     async callTool({ system, user, tool, maxTokens }) {
       const res = await client.messages.create({
         model: config.anthropic.model,
@@ -124,7 +128,7 @@ export async function evaluateCard(llm: LlmClient, card: Card): Promise<Evaluati
     questions: asStrings(input.questions).slice(0, 8),
     summary: String(input.summary ?? ""),
     rubricVersion: rubric.version,
-    model: config.anthropic.model,
+    model: llm.model,
     createdAt: new Date().toISOString(),
   };
 }
@@ -188,7 +192,7 @@ export async function generateScenarios(
     feature: String(input.funcionalidade ?? card.title),
     scenarios,
     gaps: asStrings(input.lacunas),
-    model: config.anthropic.model,
+    model: llm.model,
     createdAt: new Date().toISOString(),
   };
 }

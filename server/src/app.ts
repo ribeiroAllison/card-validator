@@ -24,8 +24,8 @@ export function createApp(cards: CardSource, llm: LlmClient) {
     res.json({
       mode: cards.mode,
       project: cards.mode === "azdo" ? `${config.azdo.org}/${config.azdo.project}` : null,
-      model: config.anthropic.model,
-      aiConfigured: Boolean(config.anthropic.apiKey),
+      model: llm.model,
+      aiMock: llm.model === "simulado",
       minScore: config.minScore,
     });
   });

@@ -47,7 +47,7 @@ button.primary { background: var(--navy); color: var(--lime); border-color: var(
 .status { display: flex; gap: 8px; flex-wrap: wrap; }
 .pill { font-size: 12px; padding: 4px 10px; border-radius: 99px; background: #1c2f52; color: #dfe7f0; }
 .pill.azdo { background: var(--lime); color: var(--navy); font-weight: bold; }
-.pill.warn { background: var(--bad); color: #fff; }
+.pill.warn { background: #f5a623; color: var(--navy); font-weight: bold; }
 
 .layout { flex: 1; display: grid; grid-template-columns: 320px 1fr; min-height: 0; }
 
