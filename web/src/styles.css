@@ -41,7 +41,8 @@ button.primary { background: var(--vante-teal); color: var(--vante-white); borde
 button.primary:hover:not(:disabled) { background: var(--vante-teal-dark); border-color: var(--vante-teal-dark); }
 button:focus-visible, .search:focus-visible { outline: 2px solid var(--vante-teal); outline-offset: 2px; }
 
-.app { min-height: 100vh; display: flex; flex-direction: column; }
+/* Layout de aplicação: topo fixo, lista lateral e conteúdo rolam de forma independente */
+.app { height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
 /* ---- Topo: Deep Teal, logo oficial no canto superior direito -------------- */
 .topbar {
@@ -72,6 +73,7 @@ button:focus-visible, .search:focus-visible { outline: 2px solid var(--vante-tea
 .pill.warn { background: var(--vante-lime); border-color: var(--vante-lime); color: var(--vante-teal-dark); font-weight: bold; }
 
 .layout { flex: 1; display: grid; grid-template-columns: 320px 1fr; min-height: 0; }
+.topbar { flex-shrink: 0; }
 
 /* ---- Lista lateral: Deep Teal Dark ---------------------------------------- */
 .sidebar {
@@ -79,10 +81,7 @@ button:focus-visible, .search:focus-visible { outline: 2px solid var(--vante-tea
   color: var(--vante-white);
   padding: 20px 16px;
   overflow-y: auto;
-  height: calc(100vh - 90px);
-  position: sticky;
-  top: 0;
-  align-self: start;
+  min-height: 0;
 }
 .search {
   width: 100%;
@@ -128,7 +127,8 @@ button:focus-visible, .search:focus-visible { outline: 2px solid var(--vante-tea
 .meta { color: var(--peers-blue-02); font-size: 12px; }
 
 /* ---- Conteúdo: branco puro ------------------------------------------------- */
-.main { padding: 28px; display: flex; flex-direction: column; gap: 18px; max-width: 1120px; width: 100%; }
+.main { padding: 28px; display: flex; flex-direction: column; gap: 18px; overflow-y: auto; min-height: 0; }
+.main > * { width: 100%; max-width: 1120px; flex-shrink: 0; }
 .panel { background: var(--vante-white); border: 1px solid var(--border); border-radius: 10px; padding: 24px; }
 
 .card-head { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; }
@@ -258,8 +258,10 @@ button:focus-visible, .search:focus-visible { outline: 2px solid var(--vante-tea
 .empty-copy .triad { font-size: 11px; text-transform: uppercase; letter-spacing: 0.24em; color: var(--border); margin-top: 14px; }
 
 @media (max-width: 900px) {
+  .app { height: auto; overflow: visible; }
   .layout { grid-template-columns: 1fr; }
-  .sidebar { position: static; height: auto; max-height: 320px; }
+  .main { overflow: visible; }
+  .sidebar { max-height: 320px; }
   .card-body, .criteria { grid-template-columns: 1fr; }
   .logo { width: 120px; }
 }

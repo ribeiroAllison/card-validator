@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   api,
   htmlToText,
@@ -38,6 +38,7 @@ export default function App() {
 
   const [busy, setBusy] = useState<"" | "card" | "evaluate" | "scenarios" | "publish">("");
   const [error, setError] = useState("");
+  const mainRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     api.health().then(setHealth).catch((e) => setListError(e.message));
@@ -65,6 +66,7 @@ export default function App() {
     const c = await run("card", () => api.card(id));
     if (!c) return;
     setCard(c);
+    mainRef.current?.scrollTo({ top: 0 });
     setEvaluation(null);
     setScenarios(null);
     setVerdicts({});
@@ -166,7 +168,7 @@ export default function App() {
           </ul>
         </aside>
 
-        <main className="main">
+        <main className="main" ref={mainRef}>
           {error && <div className="error banner">{error}</div>}
           {!card && <Empty loading={busy === "card"} />}
 
