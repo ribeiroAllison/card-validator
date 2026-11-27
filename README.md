@@ -1,6 +1,6 @@
 # Card Validator
 
-Prova de conceito da Peers Solutions: dois agentes de IA ligados ao **Azure DevOps** que atuam no refinamento, antes do desenvolvimento.
+Prova de conceito da Vante (Peers Group): dois agentes de IA ligados ao **Azure DevOps** que atuam no refinamento, antes do desenvolvimento.
 
 1. **Avaliador de cards.** Dá uma nota de 0 a 100 à qualidade do card, segundo uma rubrica, e devolve as perguntas que o time deve fazer ao PO.
 2. **Gerador de cenários.** Transforma o card aprovado em cenários de teste em Gherkin (caminho feliz, alternativos, erros e limites) e lista os cenários que ficaram de fora por falta de informação.
@@ -82,6 +82,10 @@ Azure DevOps ──(REST)──► server (Node/Express) ──► Claude | Gemi
 - **Cenários só são liberados com nota mínima.** Abaixo dela, o front oferece "Gerar mesmo assim", e as perguntas em aberto vão junto para a IA não presumir respostas.
 - **Leitura dos cards:** título, Description (ou Repro Steps em bugs) e Acceptance Criteria. A lista mostra os 50 cards abertos mais recentes do tipo User Story, PBI, Bug ou Requirement.
 
+## Identidade visual
+
+Segue o Brand Book Vante v2.1: Deep Teal `#004E54` e Deep Teal Dark `#023539` nas áreas escuras, branco puro no conteúdo e Lime `#E1FF00` só como acento sobre Teal (nunca sobre branco). A fonte é TG Haido Grotesk quando estiver instalada, com Arial como alternativa. Os logos em `web/public/brand/` são os arquivos oficiais em PNG provisório. Troque pelos vetores mestres quando forem liberados.
+
 ## Onde ajustar
 
 | Arquivo | O que muda |
@@ -118,5 +122,5 @@ Os testes cobrem o cálculo da nota, a conversão de HTML e o fluxo completo da 
 
 - Autenticação mínima: uma senha única (`APP_PASSWORD`), suficiente para uma demo, não para produção.
 - O PAT é de uma pessoa. Num piloto maior, o ideal é uma service connection ou Entra ID.
-- Use projetos internos da Peers até validar com o jurídico o envio de dados de clientes à IA.
+- Use projetos internos até validar com o jurídico o envio de dados de clientes à IA.
 - Os cenários são publicados como comentário. Criar work items do tipo Test Case fica para uma próxima versão.

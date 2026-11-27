@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   api,
   htmlToText,
@@ -38,6 +38,7 @@ export default function App() {
 
   const [busy, setBusy] = useState<"" | "card" | "evaluate" | "scenarios" | "publish">("");
   const [error, setError] = useState("");
+  const mainRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     api.health().then(setHealth).catch((e) => setListError(e.message));
@@ -65,6 +66,7 @@ export default function App() {
     const c = await run("card", () => api.card(id));
     if (!c) return;
     setCard(c);
+    mainRef.current?.scrollTo({ top: 0 });
     setEvaluation(null);
     setScenarios(null);
     setVerdicts({});
@@ -107,10 +109,9 @@ export default function App() {
     <div className="app">
       <header className="topbar">
         <div className="brand">
-          <span className="logo">Card Validator</span>
-          <span className="tag">PoC · Peers</span>
-        </div>
-        {health && (
+          <span className="app-name">Card Validator</span>
+          <span className="tag">Qualidade de cards e cenários de teste · PoC</span>
+          {health && (
           <div className="status">
             <span className={`pill ${health.mode}`}>
               {health.mode === "azdo" ? `Azure DevOps · ${health.project}` : "Modo demo · cards de exemplo"}
@@ -128,7 +129,10 @@ export default function App() {
               </span>
             )}
           </div>
-        )}
+          )}
+        </div>
+        {/* Arquivo oficial do logo (brand book: canto superior direito, sem redesenho) */}
+        <img className="logo" src="/brand/vante-peers-group-branco.png" alt="Vante Peers Group" width={160} />
       </header>
 
       <div className="layout">
@@ -164,7 +168,7 @@ export default function App() {
           </ul>
         </aside>
 
-        <main className="main">
+        <main className="main" ref={mainRef}>
           {error && <div className="error banner">{error}</div>}
           {!card && <Empty loading={busy === "card"} />}
 
@@ -197,7 +201,8 @@ export default function App() {
               <section className="panel">
                 <div className="step-head">
                   <h2>
-                    <span className="num">1</span> Qualidade do card
+                    <span className="num">01</span>
+                    Qualidade do card
                   </h2>
                   <button className="primary" onClick={evaluate} disabled={!!busy}>
                     {busy === "evaluate" ? "Avaliando…" : evaluation ? "Avaliar de novo" : "Avaliar card"}
@@ -209,7 +214,8 @@ export default function App() {
               <section className="panel">
                 <div className="step-head">
                   <h2>
-                    <span className="num">2</span> Cenários de teste
+                    <span className="num">02</span>
+                    Cenários de teste
                   </h2>
                   <div className="actions">
                     {evaluation && !evaluation.passed && (
@@ -247,7 +253,8 @@ export default function App() {
               <section className="panel">
                 <div className="step-head">
                   <h2>
-                    <span className="num">3</span> Publicar no card
+                    <span className="num">03</span>
+                    Publicar no card
                   </h2>
                   <button className="primary" onClick={publish} disabled={!!busy || (!evaluation && !scenarios)}>
                     {busy === "publish" ? "Publicando…" : health?.mode === "azdo" ? "Comentar no card" : "Ver prévia do comentário"}
@@ -277,11 +284,11 @@ export default function App() {
 function Empty({ loading }: { loading: boolean }) {
   return (
     <div className="empty-state">
-      <h2>{loading ? "Carregando card…" : "Escolha um card"}</h2>
-      <p>
-        Selecione um card na lista ou digite o ID. Depois: <b>1.</b> avalie a qualidade, <b>2.</b> gere os cenários,{" "}
-        <b>3.</b> publique no card.
-      </p>
+      <div className="empty-copy">
+        <h2>{loading ? "Carregando card…" : "Do card ao cenário de teste."}</h2>
+        <p className="triad">Avaliar › Gerar cenários › Publicar</p>
+        <p>Selecione um card na lista ou digite o ID para começar.</p>
+      </div>
     </div>
   );
 }
